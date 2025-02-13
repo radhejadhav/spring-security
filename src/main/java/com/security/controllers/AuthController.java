@@ -1,5 +1,6 @@
 package com.security.controllers;
 
+import com.security.aop.RateLimit;
 import com.security.dto.LoginUser;
 import com.security.entities.User;
 import com.security.services.AuthenticationService;
@@ -26,6 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @RateLimit
     public ResponseEntity<Object> loginUser(@RequestBody LoginUser user){
         User authUser = this.authenticationService.authenticate(user);
         String jwtToken = jwtService.generateToken(authUser);

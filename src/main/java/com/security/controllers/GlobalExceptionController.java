@@ -1,5 +1,7 @@
 package com.security.controllers;
 
+import com.security.exceptions.RateLimitException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,6 +11,11 @@ import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExceptionController {
+
+    @ExceptionHandler(RateLimitException.class)
+    public ResponseEntity<Object> rateLimitException(RateLimitException ex){
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
+    }
 
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<Object> globalHandler(Exception exception){

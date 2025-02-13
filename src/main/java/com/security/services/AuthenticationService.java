@@ -1,5 +1,6 @@
 package com.security.services;
 
+import com.security.aop.LoginEvent;
 import com.security.dao.UserRepository;
 import com.security.dto.LoginUser;
 import com.security.entities.User;
@@ -18,6 +19,7 @@ public class AuthenticationService {
         this.repository = repository;
     }
 
+    @LoginEvent
     public User authenticate(LoginUser input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

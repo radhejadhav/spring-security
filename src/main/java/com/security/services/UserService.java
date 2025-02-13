@@ -8,6 +8,7 @@ import com.security.entities.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -27,10 +28,12 @@ public class UserService {
 
     private final UserRepository repository;
     private final BCryptPasswordEncoder encoder;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public UserService(UserRepository repository, BCryptPasswordEncoder encoder) {
+    public UserService(UserRepository repository, BCryptPasswordEncoder encoder, KafkaTemplate kafkaTemplate) {
         this.repository = repository;
         this.encoder = encoder;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @EventListener(ApplicationStartedEvent.class)
@@ -45,6 +48,8 @@ public class UserService {
                 createUser.setFullName("Radheshyam");
                 this.createUser(createUser);
             }
+
+            kafkaTemplate.send("TOPIC-1", user.toString());
         }catch (Exception e){
             log.error(e.getMessage());
         }
